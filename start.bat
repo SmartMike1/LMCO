@@ -1,3 +1,3 @@
 @echo off
 cd /d %~dp0
-start "" /B Diplom.exe
+start "" /B python Diplom.py
