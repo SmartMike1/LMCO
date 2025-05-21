@@ -14,7 +14,7 @@ REMOTE_VERSION_URL = "https://raw.githubusercontent.com/SmartMike1/LMCO/main/Mai
 LOCAL_VERSION_FILE = "version.txt"
 APP_DIR = "Main"
 MAIN_SCRIPT = "Diplom.py"
-REPO_SUBDIR = "LMCO-main/Main/"
+REPO_SUBDIR = "LMCO-main/"
 
 
 def get_local_version():
@@ -53,7 +53,7 @@ def download_and_extract_update(update_log_callback):
 
 def run_main_script():
     try:
-        subprocess.Popen(["start", "", "start_app.bat"], shell=True)
+        subprocess.Popen(["start", "", "start.bat"], shell=True)
     except Exception as e:
         with open("error.log", "a") as log_file:
             log_file.write(f"\n[Launcher Error] {e}\n")
