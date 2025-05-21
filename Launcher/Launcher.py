@@ -53,7 +53,7 @@ def download_and_extract_update(update_log_callback):
 
 def run_main_script():
     try:
-        subprocess.Popen(["start", "", "start.bat"], shell=True)
+        subprocess.Popen(["start", "", "Main\start.bat"], shell=True)
     except Exception as e:
         with open("error.log", "a") as log_file:
             log_file.write(f"\n[Launcher Error] {e}\n")
