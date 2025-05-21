@@ -10,7 +10,7 @@ from tkinter import ttk, messagebox
 
 # ==== Настройки ====
 GITHUB_ZIP_URL = "https://github.com/SmartMike1/LMCO/archive/refs/heads/main.zip"
-REMOTE_VERSION_URL = "https://raw.githubusercontent.com/SmartMike1/LMCO/main/Main/version.txt"
+REMOTE_VERSION_URL = "https://raw.githubusercontent.com/SmartMike1/LMCO/main/version.txt"
 LOCAL_VERSION_FILE = "version.txt"
 APP_DIR = "Main"
 MAIN_SCRIPT = "Diplom.py"
