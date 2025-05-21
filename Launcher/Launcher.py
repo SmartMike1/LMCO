@@ -6,6 +6,7 @@ import threading
 import subprocess
 import sys
 import traceback
+import tempfile
 import tkinter as tk
 from tkinter import ttk, messagebox
 
@@ -14,9 +15,9 @@ GITHUB_ZIP_URL = "https://github.com/SmartMike1/LMCO/archive/refs/heads/main.zip
 REMOTE_VERSION_URL = "https://raw.githubusercontent.com/SmartMike1/LMCO/main/version.txt"
 LOCAL_VERSION_FILE = "version.txt"
 MAIN_SCRIPT = "Diplom.py"
-REPO_SUBDIR = "LMCO-main/"  # Папка внутри архива GitHub
+REPO_SUBDIR = "LMCO-main/"
 
-# ==== Чтение локальной версии ====
+
 def get_local_version():
     try:
         with open(LOCAL_VERSION_FILE, "r") as f:
@@ -24,7 +25,7 @@ def get_local_version():
     except FileNotFoundError:
         return "0.0.0"
 
-# ==== Получение версии из GitHub ====
+
 def get_remote_version():
     try:
         response = requests.get(REMOTE_VERSION_URL, timeout=10)
@@ -32,7 +33,7 @@ def get_remote_version():
     except Exception:
         return None
 
-# ==== Скачивание и распаковка обновлений ====
+
 def download_and_extract_update(update_log_callback):
     update_log_callback("🔄 Скачивание обновлений...")
     response = requests.get(GITHUB_ZIP_URL)
@@ -41,8 +42,8 @@ def download_and_extract_update(update_log_callback):
             if member.startswith(REPO_SUBDIR):
                 rel_path = member.replace(REPO_SUBDIR, "")
                 if rel_path:
-                    # ⚠️ Игнорируем launcher.py/launcher.exe
-                    if rel_path.lower() in ("Luncher.py", "Launcher.exe"):
+                    # ❗ Исключаем launcher.py/.exe
+                    if rel_path.lower() in ("launcher.py", "launcher.exe"):
                         continue
 
                     full_path = os.path.join(".", rel_path)
@@ -54,24 +55,31 @@ def download_and_extract_update(update_log_callback):
                             f.write(zip_ref.read(member))
     update_log_callback("✅ Обновление завершено.")
 
-# ==== Запуск Diplom.py ====
+
 def run_main_script():
     try:
         with open("error.log", "w") as log_file:
-            log_file.write("[Запуск Diplom.py]\n")
-            subprocess.Popen(
-                [sys.executable, MAIN_SCRIPT],
-                stdout=log_file,
-                stderr=log_file
-            )
-            log_file.write("[Diplom.py запущен]\n")
+            log_file.write("[Launcher] Подготовка к запуску Diplom.py...\n")
+
+        # Создаём временный .bat-файл
+        bat_content = f"""@echo off
+start "" "{sys.executable}" "{MAIN_SCRIPT}"
+exit
+"""
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".bat", delete=False) as bat_file:
+            bat_file.write(bat_content)
+            bat_path = bat_file.name
+
+        # Запускаем .bat
+        subprocess.Popen(["cmd", "/c", bat_path], shell=True)
+
     except Exception as e:
         with open("error.log", "a") as log_file:
             log_file.write(f"\n[Launcher Error] {e}\n")
             log_file.write(traceback.format_exc())
-        messagebox.showerror("Ошибка запуска", f"Не удалось запустить {MAIN_SCRIPT}.\nСмотри error.log")
 
-# ==== Графический интерфейс ====
+
+# ==== GUI интерфейс ====
 class LauncherApp(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -114,14 +122,13 @@ class LauncherApp(tk.Tk):
             self.log("Запуск приложения...")
             self.update_idletasks()
             run_main_script()
+            self.destroy()
 
         except Exception as e:
             self.progress.stop()
             messagebox.showerror("Ошибка запуска", f"Произошла ошибка: {e}")
-        finally:
             self.destroy()
-            self.quit()  # Важно для корректного закрытия при запуске как exe
 
-# ==== Точка входа ====
+
 if __name__ == "__main__":
     LauncherApp().mainloop()
