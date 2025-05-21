@@ -4,18 +4,17 @@ import zipfile
 import requests
 import threading
 import subprocess
-import sys
 import traceback
-import tempfile
 import tkinter as tk
 from tkinter import ttk, messagebox
 
 # ==== Настройки ====
 GITHUB_ZIP_URL = "https://github.com/SmartMike1/LMCO/archive/refs/heads/main.zip"
-REMOTE_VERSION_URL = "https://raw.githubusercontent.com/SmartMike1/LMCO/main/version.txt"
+REMOTE_VERSION_URL = "https://raw.githubusercontent.com/SmartMike1/LMCO/main/Main/version.txt"
 LOCAL_VERSION_FILE = "version.txt"
+APP_DIR = "Main"
 MAIN_SCRIPT = "Diplom.py"
-REPO_SUBDIR = "LMCO-main/"
+REPO_SUBDIR = "LMCO-main/Main/"
 
 
 def get_local_version():
@@ -42,11 +41,7 @@ def download_and_extract_update(update_log_callback):
             if member.startswith(REPO_SUBDIR):
                 rel_path = member.replace(REPO_SUBDIR, "")
                 if rel_path:
-                    # ❗ Исключаем launcher.py/.exe
-                    if rel_path.lower() in ("launcher.py", "launcher.exe"):
-                        continue
-
-                    full_path = os.path.join(".", rel_path)
+                    full_path = os.path.join(APP_DIR, rel_path)
                     if member.endswith("/"):
                         os.makedirs(full_path, exist_ok=True)
                     else:
@@ -58,21 +53,7 @@ def download_and_extract_update(update_log_callback):
 
 def run_main_script():
     try:
-        with open("error.log", "w") as log_file:
-            log_file.write("[Launcher] Подготовка к запуску Diplom.py...\n")
-
-        # Создаём временный .bat-файл
-        bat_content = f"""@echo off
-start "" "{sys.executable}" "{MAIN_SCRIPT}"
-exit
-"""
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".bat", delete=False) as bat_file:
-            bat_file.write(bat_content)
-            bat_path = bat_file.name
-
-        # Запускаем .bat
-        subprocess.Popen(["cmd", "/c", bat_path], shell=True)
-
+        subprocess.Popen(["start", "", "start_app.bat"], shell=True)
     except Exception as e:
         with open("error.log", "a") as log_file:
             log_file.write(f"\n[Launcher Error] {e}\n")
@@ -118,11 +99,10 @@ class LauncherApp(tk.Tk):
             else:
                 self.log("Обновление не требуется.")
 
-            self.progress.stop()
             self.log("Запуск приложения...")
-            self.update_idletasks()
-            run_main_script()
+            self.progress.stop()
             self.destroy()
+            run_main_script()
 
         except Exception as e:
             self.progress.stop()
