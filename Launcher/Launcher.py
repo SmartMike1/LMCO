@@ -10,11 +10,11 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 
 # ==== Настройки ====
-GITHUB_ZIP_URL = "https://github.com/SmartMike1/LMCO-Group/archive/refs/heads/main.zip"
-REMOTE_VERSION_URL = "https://raw.githubusercontent.com/SmartMike1/LMCO-Group/main/version.txt"
+GITHUB_ZIP_URL = "https://github.com/SmartMike1/LMCO/archive/refs/heads/main.zip"
+REMOTE_VERSION_URL = "https://raw.githubusercontent.com/SmartMike1/LMCO/main/version.txt"
 LOCAL_VERSION_FILE = "version.txt"
 MAIN_SCRIPT = "Diplom.py"
-REPO_SUBDIR = "LMCO-Group-main/"  # Папка внутри архива GitHub
+REPO_SUBDIR = "LMCO-main/"  # Папка внутри архива GitHub
 
 # ==== Чтение локальной версии ====
 def get_local_version():
