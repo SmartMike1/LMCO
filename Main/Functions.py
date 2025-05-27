@@ -36,9 +36,14 @@ def get_engine():
         # "DATABASE=Argentum3;"
 
         # Работает у Сашки
-        "DRIVER={SQL Server};"
-        "SERVER=172.27.66.252,1433;"
+        "DRIVER={ODBC Driver 17 for SQL Server};"
+        # "SERVER=172.27.66.252,1433;"
+        "SERVER=CR14020,1433;"
         "DATABASE=Argentum3;"
+        "TrustServerCertificate=yes;"
+        "UID=Diplom;"
+        "PWD=My_Diplom_12345;"
+        # "Trusted_Connection=yes;"
         
         # "SERVER=CR14020\SQLEXPRESS;"
         # "SERVER=172.27.66.252,1433;"

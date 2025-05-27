@@ -104,7 +104,7 @@ class Application(BasedWindow):
 
         # print("Image =", Image)
         # print("type(Image) =", type(Image))
-        self.img = PILImage.open("images\Logo-LMCO.png")
+        self.img = PILImage.open("..\images\Logo-LMCO.png")
         self.img = self.img.resize((300, 300))
         self.photo = PILImageTk.PhotoImage(self.img)
 
